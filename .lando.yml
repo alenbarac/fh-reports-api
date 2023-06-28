@@ -1,0 +1,24 @@
+name: api.fhr
+recipe: laravel
+config:
+  webroot: public
+  php: '8.0'
+  via: apache:2.4
+  database: mysql
+  cache: none
+services:
+  appserver:
+    xdebug: true
+    config:
+      php: .lndo.php.ini
+    overrides:
+      environment:
+        XDEBUG_CONFIG: remote_host=${WSL_IP}
+    # This will only run the first time `lando start` is executed or on `lando rebuild`
+    build_as_root:
+      - export WSL_IP=`hostname -I | awk '{print $1}'`
+  # Provide some custom options for the database service
+  database:
+    # Make a random port available to the host machine for your MySQL connection.
+    # This can be a number if you want to map a specific port
+    portforward: 8811
